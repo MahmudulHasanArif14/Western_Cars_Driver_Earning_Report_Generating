@@ -681,15 +681,6 @@ const App = () => {
 
           {/* Company and Driver Information */}
           <div style={{ marginBottom: "15px" }}>
-            <h3
-              style={{
-                fontSize: "11pt",
-                fontWeight: "bold",
-                margin: "0 0 6px 0",
-              }}
-            >
-              Company and Driver Information
-            </h3>
             <table
               style={{
                 width: "100%",
@@ -941,6 +932,6 @@ const App = () => {
       </div>
     </div>
   );
-};;
+};
 
 export default App;
