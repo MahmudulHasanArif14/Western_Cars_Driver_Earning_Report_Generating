@@ -649,6 +649,16 @@ const App = () => {
               alignItems: "flex-start",
             }}
           >
+            <div style={{ width: "40%", textAlign: "right" }}>
+              <img
+                src={logoImg}
+                alt="Logo"
+                style={{ width: "3.5cm", height: "auto", objectFit: "contain" }}
+                onError={(e) => {
+                  e.target.style.display = "none";
+                }}
+              />
+            </div>
             <div style={{ width: "60%" }}>
               <div style={{ fontSize: "16pt", fontWeight: "bold" }}>
                 {company.name}
@@ -660,16 +670,6 @@ const App = () => {
                 Tel: {company.phone} <br />
                 {company.website}
               </div>
-            </div>
-            <div style={{ width: "40%", textAlign: "right" }}>
-              <img
-                src={logoImg}
-                alt="Logo"
-                style={{ width: "3.5cm", height: "auto", objectFit: "contain" }}
-                onError={(e) => {
-                  e.target.style.display = "none";
-                }}
-              />
             </div>
           </div>
 
@@ -781,9 +781,6 @@ const App = () => {
                   </th>
                   <th style={{ padding: "6px 8px", textAlign: "right" }}>
                     Net (£)
-                  </th>
-                  <th style={{ padding: "6px 8px", textAlign: "center" }}>
-                    Date
                   </th>
                 </tr>
               </thead>
