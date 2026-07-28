@@ -68,7 +68,7 @@ const App = () => {
       const g = updated[index].gross || 0;
       const rate = 15 || 0;
       const d = updated[index].deduct || 0;
-      const v = 3 || 0;
+      const v = 20 || 0;
 
       // Calculate monetary commission amount based on percentage
       const calculatedComm = g * (rate / 100);
@@ -523,7 +523,7 @@ const App = () => {
                         Comm. (%)
                       </th>
                       <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        VAT. (3%) (£)
+                        VAT. (£)
                       </th>
                       <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Net (£)
@@ -807,7 +807,7 @@ const App = () => {
                       }}
                     >
                       {m.commAmount
-                        ? `${fmt(m.commAmount)} (${m.commRate}%)`
+                        ? `${fmt(m.commAmount)}`
                         : ""}
                     </td>
                     <td
