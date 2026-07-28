@@ -66,7 +66,7 @@ const App = () => {
 
     if (field === "gross" || field === "commRate" || field === "deduct" || field === "vat") {
       const g = updated[index].gross || 0;
-      const rate = 15 || 0;
+      const rate = updated[index].commRate || 0;
       const d = updated[index].deduct || 0;
       const v = 20 || 0;
 
