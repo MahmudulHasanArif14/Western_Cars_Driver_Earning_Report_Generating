@@ -47,11 +47,11 @@ const App = () => {
     return months.map((m) => ({
       month: m,
       gross: 0,
-      commRate: 0, // Commission rate in percentage (e.g. 18 for 18%)
+      commRate: 15, // Commission rate in percentage (e.g. 18 for 18%)
       commAmount: 0, // Calculated monetary commission value
+      vatAmount: 0, // Calculated VAT amount
       deduct: 0,
       net: 0,
-      date: "",
     }));
   };
 
@@ -64,17 +64,22 @@ const App = () => {
     const val = isNaN(num) ? 0 : num;
     updated[index][field] = val;
 
-    if (field === "gross" || field === "commRate" || field === "deduct") {
+    if (field === "gross" || field === "commRate" || field === "deduct" || field === "vat") {
       const g = updated[index].gross || 0;
-      const rate = updated[index].commRate || 0;
+      const rate = 15 || 0;
       const d = updated[index].deduct || 0;
+      const v = 3 || 0;
 
       // Calculate monetary commission amount based on percentage
       const calculatedComm = g * (rate / 100);
       updated[index].commAmount = calculatedComm;
 
+      // calculate VAT amount based on percentage
+      const calculatedVAT = calculatedComm * (v / 100);
+      updated[index].vatAmount = calculatedVAT;
+
       // Net = Gross - Calculated Commission Amount - Deductions
-      updated[index].net = Math.max(0, g - calculatedComm - d);
+      updated[index].net = Math.max(0, g - (calculatedComm + calculatedVAT));
     }
     setMonths(updated);
   };
@@ -90,10 +95,11 @@ const App = () => {
       acc.gross += m.gross || 0;
       acc.commAmount += m.commAmount || 0;
       acc.deduct += m.deduct || 0;
+      acc.vatAmount += m.vatAmount || 0;
       acc.net += m.net || 0;
       return acc;
     },
-    { gross: 0, commAmount: 0, deduct: 0, net: 0 },
+    { gross: 0, commAmount: 0, deduct: 0, vatAmount: 0, net: 0 },
   );
 
   const fmt = (val) => (val ?? 0).toFixed(2);
@@ -115,7 +121,7 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50">
       {/* Navigation Bar */}
       <nav className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -517,14 +523,12 @@ const App = () => {
                         Comm. (%)
                       </th>
                       <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Deduct. (£)
+                        VAT. (3%) (£)
                       </th>
                       <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Net (£)
                       </th>
-                      <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Date
-                      </th>
+                    
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -579,9 +583,9 @@ const App = () => {
                             type="number"
                             step="0.01"
                             placeholder="0.00"
-                            value={m.deduct || ""}
+                            value={fmt(m.vatAmount)|| ""}
                             onChange={(e) =>
-                              updateMonth(idx, "deduct", e.target.value)
+                              updateMonth(idx, "vatAmount", e.target.value)
                             }
                             className="w-24 border border-gray-300 p-2 rounded-lg text-sm text-right focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                           />
@@ -591,16 +595,7 @@ const App = () => {
                             £{fmt(m.net)}
                           </span>
                         </td>
-                        <td className="px-4 py-2.5 text-center">
-                          <input
-                            type="date"
-                            value={m.date || ""}
-                            onChange={(e) =>
-                              updateMonthDate(idx, e.target.value)
-                            }
-                            className="border border-gray-300 p-2 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                          />
-                        </td>
+                       
                       </tr>
                     ))}
                     <tr className="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold">
@@ -612,7 +607,7 @@ const App = () => {
                         £{fmt(totals.commAmount)}
                       </td>
                       <td className="px-4 py-3 text-sm text-right">
-                        £{fmt(totals.deduct)}
+                        £{fmt(totals.vatAmount)}
                       </td>
                       <td className="px-4 py-3 text-sm text-right">
                         £{fmt(totals.net)}
@@ -777,7 +772,7 @@ const App = () => {
                     Comm. (£)
                   </th>
                   <th style={{ padding: "6px 8px", textAlign: "right" }}>
-                    Deduct. (£)
+                    VAT. (£)
                   </th>
                   <th style={{ padding: "6px 8px", textAlign: "right" }}>
                     Net (£)
@@ -822,7 +817,7 @@ const App = () => {
                         lineHeight: "1.4",
                       }}
                     >
-                      {m.deduct ? fmt(m.deduct) : ""}
+                      {m.vatAmount ? fmt(m.vatAmount) : ""}
                     </td>
                     <td
                       style={{
@@ -833,15 +828,7 @@ const App = () => {
                     >
                       {m.net ? fmt(m.net) : ""}
                     </td>
-                    <td
-                      style={{
-                        padding: "5px 8px",
-                        textAlign: "center",
-                        lineHeight: "1.4",
-                      }}
-                    >
-                      {m.date || ""}
-                    </td>
+                 
                   </tr>
                 ))}
                 <tr
@@ -860,7 +847,7 @@ const App = () => {
                     {fmt(totals.commAmount)}
                   </td>
                   <td style={{ padding: "6px 8px", textAlign: "right" }}>
-                    {fmt(totals.deduct)}
+                    {fmt(totals.vatAmount)}
                   </td>
                   <td style={{ padding: "6px 8px", textAlign: "right" }}>
                     {fmt(totals.net)}
@@ -906,9 +893,9 @@ const App = () => {
                   </td>
                 </tr>
                 <tr>
-                  <td style={{ padding: "4px 0" }}>Total Other Deductions:</td>
+                  <td style={{ padding: "4px 0" }}>Total VAT:</td>
                   <td style={{ textAlign: "right", padding: "4px 0" }}>
-                    £ {fmt(totals.deduct)}
+                    £ {fmt(totals.vatAmount)}
                   </td>
                 </tr>
                 <tr
