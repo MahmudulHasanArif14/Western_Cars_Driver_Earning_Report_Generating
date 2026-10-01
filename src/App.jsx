@@ -15,6 +15,18 @@ const App = () => {
   const [taxFrom, setTaxFrom] = useState("2025-04-06");
   const [taxTo, setTaxTo] = useState("2026-04-05");
 
+  const formatDate = (date) => {
+    if (!date) return "";
+
+    const [year, month, day] = date.split("-");
+
+    return `${day}/${month}/${year}`;
+  };
+
+  const data = {
+    taxFrom: formatDate(taxFrom),
+    taxTo: formatDate(taxTo),
+  };
   // Driver details
   const [driver, setDriver] = useState({
     name: "",
@@ -64,7 +76,12 @@ const App = () => {
     const val = isNaN(num) ? 0 : num;
     updated[index][field] = val;
 
-    if (field === "gross" || field === "commRate" || field === "deduct" || field === "vat") {
+    if (
+      field === "gross" ||
+      field === "commRate" ||
+      field === "deduct" ||
+      field === "vat"
+    ) {
       const g = updated[index].gross || 0;
       const rate = updated[index].commRate || 0;
       const d = updated[index].deduct || 0;
@@ -410,7 +427,10 @@ const App = () => {
                         <input
                           type="date"
                           value={taxFrom}
-                          onChange={(e) => setTaxFrom(e.target.value)}
+                          onChange={(e) => {
+                            setTaxFrom(e.target.value);
+                            console.log("Tax From updated:", e.target.value);
+                          }}
                           className="w-full border border-gray-300 p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                         />
                       </div>
@@ -528,7 +548,6 @@ const App = () => {
                       <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Net (£)
                       </th>
-                    
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -583,7 +602,7 @@ const App = () => {
                             type="number"
                             step="0.01"
                             placeholder="0.00"
-                            value={fmt(m.vatAmount)|| ""}
+                            value={fmt(m.vatAmount) || ""}
                             onChange={(e) =>
                               updateMonth(idx, "vatAmount", e.target.value)
                             }
@@ -595,7 +614,6 @@ const App = () => {
                             £{fmt(m.net)}
                           </span>
                         </td>
-                       
                       </tr>
                     ))}
                     <tr className="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold">
@@ -696,8 +714,8 @@ const App = () => {
                     Tax Year:
                   </td>
                   <td style={{ padding: "3px 0" }}>
-                    From {taxFrom || "________________"} To{" "}
-                    {taxTo || "________________"}
+                    From {data.taxFrom || "________________"} To{" "}
+                    {data.taxTo || "________________"}
                   </td>
                 </tr>
                 <tr>
@@ -806,9 +824,7 @@ const App = () => {
                         lineHeight: "1.4",
                       }}
                     >
-                      {m.commAmount
-                        ? `${fmt(m.commAmount)}`
-                        : ""}
+                      {m.commAmount ? `${fmt(m.commAmount)}` : ""}
                     </td>
                     <td
                       style={{
@@ -828,7 +844,6 @@ const App = () => {
                     >
                       {m.net ? fmt(m.net) : ""}
                     </td>
-                 
                   </tr>
                 ))}
                 <tr
